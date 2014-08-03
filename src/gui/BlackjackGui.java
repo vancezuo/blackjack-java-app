@@ -63,7 +63,7 @@ public class BlackjackGui {
 		@Override
 		public void actionPerformed(ActionEvent a) {
 			String command = a.getActionCommand();
-			String bop = "That tickles!"; //Placeholder for executing actual command
+			String bop = "That tickles!"; //Placeholder for actual execution
 			if (command.equals("Hit")) {
 				giveCard(human);
 				boolean busted = human.getHand().isBusted();
@@ -148,20 +148,23 @@ public class BlackjackGui {
 			if (playerHasBJ && dealerHasBJ) {
 				player.addWinnings(player.getCurrentBet());
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "We both have Blackjack," +
-							" a push. Your $" + player.getCurrentBet() + " bet is returned.");
+					JOptionPane.showMessageDialog(this,
+							"We both have Blackjack," + " a push. Your $"
+									+ player.getCurrentBet()
+									+ " bet is returned.");
 				return;
 			} else if (playerHasBJ && !dealerHasBJ) {
 				player.addWinnings(player.getCurrentBet() * 5 / 2);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "Not bad, a Blackjack. " +
-							"You win $" + player.getCurrentBet() * 5 / 2 + ".");
+					JOptionPane.showMessageDialog(this,
+							"Not bad, a Blackjack. " + "You win $"
+									+ player.getCurrentBet() * 5 / 2 + ".");
 				return;
 			} else if (!playerHasBJ && dealerHasBJ) {
 				player.addWinnings(0);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "I have Blackjack. " +
-							"Sorry, you lose your bet.");				
+					JOptionPane.showMessageDialog(this, "I have Blackjack. "
+							+ "Sorry, you lose your bet.");			
 				return;
 			}
 
@@ -171,14 +174,14 @@ public class BlackjackGui {
 			if (playerHasBusted) {
 				player.addWinnings(0);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "You have busted. " +
-							"Sorry, you lose.");
+					JOptionPane.showMessageDialog(this, "You have busted. "
+							+ "Sorry, you lose.");
 				return;
 			} else if (dealerHasBusted) {
 				player.addWinnings(player.getCurrentBet() * 2);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "Damn, I've busted. " +
-							"You get $" + player.getCurrentBet() * 2 + ".");
+					JOptionPane.showMessageDialog(this, "Damn, I've busted. "
+							+ "You get $" + player.getCurrentBet() * 2 + ".");
 				return;
 			}
 
@@ -188,20 +191,21 @@ public class BlackjackGui {
 			if (playerValue > dealerValue) {
 				player.addWinnings(player.getCurrentBet() * 2);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "Looks like you've won. " +
-							"Take your $" + player.getCurrentBet() * 2 + ".");
+					JOptionPane.showMessageDialog(this,
+							"Looks like you've won. " + "Take your $"
+									+ player.getCurrentBet() * 2 + ".");
 				return;
 			} else if (playerValue == dealerValue){
 				player.addWinnings(player.getCurrentBet());
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "A push. Your $" + 
-							player.getCurrentBet() + " bet is returned.");
+					JOptionPane.showMessageDialog(this, "A push. Your $"
+							+ player.getCurrentBet() + " bet is returned.");
 				return;
 			} else {
 				player.addWinnings(0);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "My hand wins. Better luck" +
-							" next time around.");
+					JOptionPane.showMessageDialog(this, "My hand wins. "
+							+ "Better luck next time around.");
 				return;
 			}
 		}
@@ -217,16 +221,19 @@ public class BlackjackGui {
 			if (dealer.getHand().isBlackJack()) {
 				player.addWinnings(insureBet * 3);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "Lucky you, I have Blackjack." +
-							"Take $" + insureBet * 3 + ".");
+					JOptionPane.showMessageDialog(this,
+							"Lucky you, I have Blackjack." + "Take $"
+									+ insureBet * 3 + ".");
 				turnContinue = false;
 			} 
 			else {
 				player.addWinnings(0);
 				if (player.isHuman())
-					JOptionPane.showMessageDialog(this, "Lucky you, I don't have Blackjack. " +
-							"You lose your\n$" + insureBet + " bet, but you still have a " +
-							"chance to win.");
+					JOptionPane.showMessageDialog(this,
+							"Lucky you, I don't have Blackjack. "
+									+ "You lose your\n$" + insureBet + " "
+									+ "bet, but you still have a "
+									+ "chance to win.");
 			}
 		}
 
@@ -303,13 +310,32 @@ public class BlackjackGui {
 		 * @param splitState The split button state
 		 * @param surrenderState The surrender button state
 		 */
-		private void setButtonState(boolean hitState, boolean standState, 
+		private void setButtonState(boolean hitState, boolean standState,
 				boolean doubleState, boolean splitState, boolean surrenderState) {
-			if (hitState) playerChoices.enableHit(); else playerChoices.disableHit();
-			if (standState) playerChoices.enableStand(); else playerChoices.disableStand();
-			if (doubleState) playerChoices.enableDouble(); else playerChoices.disableDouble();
-			if (splitState) playerChoices.enableSplit(); else playerChoices.disableSplit();
-			if (surrenderState) playerChoices.enableSurrender(); else playerChoices.disableSurrender();
+			if (hitState)
+				playerChoices.enableHit();
+			else
+				playerChoices.disableHit();
+
+			if (standState)
+				playerChoices.enableStand();
+			else
+				playerChoices.disableStand();
+
+			if (doubleState)
+				playerChoices.enableDouble();
+			else
+				playerChoices.disableDouble();
+
+			if (splitState)
+				playerChoices.enableSplit();
+			else
+				playerChoices.disableSplit();
+
+			if (surrenderState)
+				playerChoices.enableSurrender();
+			else
+				playerChoices.disableSurrender();
 		}
 
 		/**
@@ -418,10 +444,12 @@ public class BlackjackGui {
 		BlackjackGui b = new BlackjackGui();
 		GameWindow game = b.new GameWindow();
 		JOptionPane.showMessageDialog(game, "Welcome to the table.\n"
-				+ "Take a seat on the far left, next to the three computer players.");        
+				+ "Take a seat on the far left, "
+				+ "next to the three computer players.");        
 		while (true) {
 			if (game.human.getMoney() < MIN_BET) {
-				JOptionPane.showMessageDialog(game, "Sorry, no money, no play.");
+				JOptionPane.showMessageDialog(game, 
+						"Sorry, no money, no play.");
 				System.exit(0);
 			}
 			//System.out.println(game.deck.getCount());

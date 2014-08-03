@@ -34,7 +34,7 @@ public class ChoicePanel extends JPanel {
 		add(hit);
 		add(stand);
 		add(dbl);
-//		add(split); // Unimplemented
+		//		add(split); // Unimplemented
 		add(surrender);
 	}
 

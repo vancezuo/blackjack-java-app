@@ -11,13 +11,15 @@ import base.Hand;
 
 /**
  * A container that shows a player's name, remaining cash, and his hand. It also
- * contains variables for its current bet, the minimum bet, and the card image file.
- * The player can be called upong to do bets, insurance, recieve money/winnings, 
- * and clear his hand. This panel cannot, however, handle splits.
+ * contains variables for its current bet, the minimum bet, and the card image
+ * file. The player can be called upon to make bets, insurance, recieve
+ * money/winnings, and clear his hand. This panel cannot, however, handle
+ * splits.
  * <p>
  * This class also contains variables and methods for an AI player. There are
- * two AIs, EASY and HARD, who react differently when asked for bets and actions.
- * Note that the AIs can still bet "on credit" after going under.
+ * two AIs, EASY and HARD, who react differently when asked for bets and
+ * actions. Note that the AIs can still bet "on credit" after going under.
+ * 
  * @author Vance
  */
 public class PlayerPanel extends JPanel {
@@ -62,14 +64,16 @@ public class PlayerPanel extends JPanel {
 	 * @param minimumBet the minimum the player is allowed to bet
 	 * @param cardImages the card images file
 	 */
-	public PlayerPanel(String pName, boolean isHumanPlayer, int difficulty, int startMoney, int minimumBet, Image cardImages) {
+	public PlayerPanel(String pName, boolean isHumanPlayer, int difficulty, 
+			int startMoney, int minimumBet, Image cardImages) {
 		super();	
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setPreferredSize(new Dimension(100, 325));
 		setOpaque(false); 
 		Color c = Color.DARK_GRAY;
 		if (isHumanPlayer) c = Color.LIGHT_GRAY;
-		setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(c), name));
+		setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createLineBorder(c), name));
 		name = pName;
 		isHuman = isHumanPlayer;
 		level = difficulty;
@@ -92,7 +96,7 @@ public class PlayerPanel extends JPanel {
 	}
 
 	/**
-	 * Returns the hand of the dealer, probably for comaparison purposes.
+	 * Returns the hand of the dealer, probably for comparison purposes.
 	 * @return dealers hand
 	 */
 	public Hand getHand() { return hand; }
@@ -109,7 +113,8 @@ public class PlayerPanel extends JPanel {
 	/**
 	 * For computer players only. Causes player to play Blackjack accordingly.
 	 * @param dealerCard the dealer's visible card
-	 * @return -1 means not a computer, 0 means stand, 1 means hit, 2 means surrender, 3 means double
+	 * @return -1 means not a computer, 0 means stand, 1 means hit, 2 means 
+	 *         surrender, 3 means double
 	 */
 	public int askComputerAction(Card dealerCard) {
 		if (!isHuman) {
@@ -120,37 +125,40 @@ public class PlayerPanel extends JPanel {
 			if(hand.isBusted()) {
 				return 0;
 			}
-			if(level == EASY){
+			if (level == EASY) {
 				int value = hand.getBestValue();
-				if(value == 11 || value == 10){
-					if (rnd.nextInt(100) < (4/13) * 100){
+				if (value == 11 || value == 10) {
+					if (rnd.nextInt(100) < (4 / 13) * 100) {
 						return 3;
 					}
-				}                                    
-				if (value <= 11) return 1;
+				}
+				if (value <= 11)
+					return 1;
 				double bustingChance = (value - 8) / 13.0;
-				double successChance = 1 - bustingChance; 
-				successChance = Math.pow((successChance + .6),2) - .6;
-				if(rnd.nextInt(100) < successChance*100) 
+				double successChance = 1 - bustingChance;
+				successChance = Math.pow((successChance + .6), 2) - .6;
+				if (rnd.nextInt(100) < successChance * 100)
 					return 1;
 				else
 					return 0;
-			}
-			else{ //HARDbot code
+			} else { // HARDbot code
 				if (hand.length() == 2) {
-					if((dealerCard.getValue() <= 9 && hand.getBestValue() == 10) ||   
-							(dealerCard.getValue() <= 10 && hand.getBestValue() == 11))
+					if ((dealerCard.getValue() <= 9 && hand.getBestValue() == 10)
+							|| (dealerCard.getValue() <= 10 && hand.getBestValue() == 11))
 						return 3;
 				}
-			if(dealerCard.getHighValue() >= 7){
-				if(hand.getBestValue() >=17) return 0;
-				else return 1;
-			}
-			else if(dealerCard.getHighValue() <= 6){
-				if(hand.getBestValue() > 11) return 0;
-				else return 1;
-			} 
-			else return 0; //just in case
+				if (dealerCard.getHighValue() >= 7) {
+					if (hand.getBestValue() >= 17)
+						return 0;
+					else
+						return 1;
+				} else if (dealerCard.getHighValue() <= 6) {
+					if (hand.getBestValue() > 11)
+						return 0;
+					else
+						return 1;
+				} else
+					return 0; // just in case
 			}
 		}
 		return -1;
@@ -174,30 +182,30 @@ public class PlayerPanel extends JPanel {
 	public int askBet(int count) {
 		int normalBet;
 		if (isHuman) {
-			normalBet = askHumanBet("Remember, the minimum wager is $" + minBet +
-					".\nHow much will you be betting?", minBet, money);
+			normalBet = askHumanBet("Remember, the minimum wager is $" + minBet
+					+ ".\nHow much will you be betting?", minBet, money);
 		} else {
 			normalBet = previousBet;
 
 			if (level == EASY) {
-				int rand = rnd.nextInt(3);				
-				if (previousOutcome == LOSS) 
-					normalBet -= minBet * rand;				
-				else if (previousOutcome == PUSH);
+				int rand = rnd.nextInt(3);
+				if (previousOutcome == LOSS)
+					normalBet -= minBet * rand;
+				else if (previousOutcome == PUSH)
+					;
 				else if (previousOutcome == WIN)
-					normalBet += minBet * rand;	
-			}
-			else if (level == HARD) {
-				int optimal = minBet*count;
+					normalBet += minBet * rand;
+			} else if (level == HARD) {
+				int optimal = minBet * count;
 				normalBet = optimal;
 			}
 
 			if (normalBet > money / 20)
-				normalBet = money/20;			
+				normalBet = money / 20;
 			if (normalBet < minBet)
 				normalBet = minBet;
 
-			previousBet = normalBet;			
+			previousBet = normalBet;		
 		}
 		money -= normalBet;
 		bet = normalBet;
@@ -215,22 +223,23 @@ public class PlayerPanel extends JPanel {
 	public int askInsurance(int count) {
 		int insureBet;
 		if (isHuman) {
-			insureBet = askHumanBet("My hand's looking pretty nice. You can " +
-					"take insurance\nagainst Blackjack for 2:1 odds, but only " +
-					"with up to half\nyour original bet ($" + bet/2 + "). How " +
-					"much will it be?", -1, Math.min(money, bet / 2));
+			String msg = "My hand's looking pretty nice. You can "
+					+ "take insurance\nagainst Blackjack for 2:1 odds, but only "
+					+ "with up to half\nyour original bet ($" + bet / 2
+					+ "). How " + "much will it be?";
+			insureBet = askHumanBet(msg, -1, Math.min(money, bet / 2));
 		} else {
 			insureBet = 0;
-			if (level == EASY) {		
+			if (level == EASY) {
 				if (rnd.nextInt(4) == 0)
 					insureBet = Math.min(money, bet / 2);
-			}
-			else if (level == HARD) {
-				if (count >= 3) 
+			} else if (level == HARD) {
+				if (count >= 3)
 					insureBet = Math.min(money, bet / 2);
 			}
 		}
-		if (insureBet < 0) insureBet = 0;
+		if (insureBet < 0)
+			insureBet = 0;
 		money -= insureBet;
 		updateText();
 		return insureBet;
@@ -331,7 +340,8 @@ public class PlayerPanel extends JPanel {
 				hBet = Integer.valueOf(sBet);	
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this.getRootPane(), "Come on, let's be serious.");
+			JOptionPane.showMessageDialog(this.getRootPane(), 
+					"Come on, let's be serious.");
 			hBet = askHumanBet(msg, min, max);
 		}
 		return hBet;
@@ -350,11 +360,13 @@ public class PlayerPanel extends JPanel {
 	/**
 	 * Paints a card image onto (x,y) of the container. A facedown card will
 	 * be drawn accordingly.
+	 * 
 	 * @param g the graphics context
 	 * @param card the card to be printed
 	 * @param x the x-position of the printed card in this container
 	 * @param y the y-position of the printed card in this container
 	 */
+	// Based on http://math.hws.edu/eck/cs124/f11/lab11/cards/PokerCard.java
 	private void drawCard(Graphics g, Card card, int x, int y) {
 		int cx; // top-left x in cards.png
 		int cy; // top-left y in cards.png
@@ -373,7 +385,8 @@ public class PlayerPanel extends JPanel {
 			}
 		}
 		// Copies 79x123 box from cards.png to GUI
-		g.drawImage(cardImgs,x,y,x+CARD_WIDTH,y+CARD_HEIGHT,cx,cy,cx+CARD_WIDTH,cy+CARD_HEIGHT,this);
+		g.drawImage(cardImgs, x, y, x + CARD_WIDTH, y + CARD_HEIGHT, cx, cy, 
+				cx + CARD_WIDTH, cy + CARD_HEIGHT, this);
 	}
 
 	/**

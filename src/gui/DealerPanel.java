@@ -105,6 +105,7 @@ public class DealerPanel extends JPanel {
 	 * @param x the x-position of the printed card in this container
 	 * @param y the y-position of the printed card in this container
 	 */
+	// Based on http://math.hws.edu/eck/cs124/f11/lab11/cards/PokerCard.java
 	private void drawCard(Graphics g, Card card, int x, int y) {
 		int cx; // top-left x in cards.png
 		int cy; // top-left y in cards.png
@@ -123,6 +124,7 @@ public class DealerPanel extends JPanel {
 			}
 		}
 		// Copies 79x123 box from cards.png to GUI
-		g.drawImage(cardImgs,x,y,x+CARD_WIDTH,y+CARD_HEIGHT,cx,cy,cx+CARD_WIDTH,cy+CARD_HEIGHT,this);
+		g.drawImage(cardImgs, x, y, x + CARD_WIDTH, y + CARD_HEIGHT, cx, cy, 
+				cx + CARD_WIDTH, cy + CARD_HEIGHT, this);
 	}
 }
