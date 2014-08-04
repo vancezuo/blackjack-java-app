@@ -477,7 +477,10 @@ public class BlackjackGui {
 	 * Runs the Game. :)
 	 * @param args
 	 */
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
+		// Fixes rendering issues on Windows
+		System.setProperty("sun.java2d.noddraw", "true");
+		
 		BlackjackGui b = new BlackjackGui();
 		GameWindow game = b.new GameWindow();
 		int delay = 0;
