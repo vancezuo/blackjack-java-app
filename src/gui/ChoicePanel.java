@@ -3,7 +3,6 @@ package gui;
 import java.awt.Color;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
 /**
  * A container of buttons for player options in Blackjack: Hit, Stand, Double, 
