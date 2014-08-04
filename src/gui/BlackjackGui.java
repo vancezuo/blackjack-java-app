@@ -116,10 +116,10 @@ public class BlackjackGui {
 
 			JPanel players = new JPanel();
 			players.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY), "Players"));
-			human = new PlayerPanel("Human - You", true, -1, START_MONEY, MIN_BET, cardImages);
-			ai1 = new PlayerPanel("Simple Computer", false, PlayerPanel.EASY, START_MONEY, MIN_BET, cardImages);
-			ai2 = new PlayerPanel("Smart Computer 1", false, PlayerPanel.HARD, START_MONEY, MIN_BET, cardImages);
-			ai3 = new PlayerPanel("Smart Computer 2", false, PlayerPanel.HARD, START_MONEY, MIN_BET, cardImages);		
+			human = new PlayerPanel("You", true, -1, START_MONEY, MIN_BET, cardImages);
+			ai1 = new PlayerPanel("Beginner AI", false, PlayerPanel.EASY_BET | PlayerPanel.EASY_PLAY, START_MONEY, MIN_BET, cardImages);
+			ai2 = new PlayerPanel("Emotional Skilled AI", false, PlayerPanel.EASY_BET | PlayerPanel.HARD_PLAY, START_MONEY, MIN_BET, cardImages);
+			ai3 = new PlayerPanel("Card-counting AI", false, PlayerPanel.HARD_BET | PlayerPanel.HARD_PLAY, START_MONEY, MIN_BET, cardImages);		
 			players.add(human);
 			players.add(ai1);
 			players.add(ai2);

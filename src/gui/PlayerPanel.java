@@ -47,9 +47,11 @@ public class PlayerPanel extends JPanel {
 	public static final int LOSS = -1;	
 
 	/** Constant representing AI easy difficulty */
-	public static final int EASY = 1;
+	public static final int EASY_BET = 0; // 00
+	public static final int EASY_PLAY = 0; // 00
 	/** Constant representing AI hard difficulty */
-	public static final int HARD = 2;
+	public static final int HARD_BET = 1; // 01
+	public static final int HARD_PLAY = 2; // 10
 
 	private int previousBet;
 	private int previousOutcome;
@@ -125,7 +127,7 @@ public class PlayerPanel extends JPanel {
 			if(hand.isBusted()) {
 				return 0;
 			}
-			if (level == EASY) {
+			if ((level & HARD_PLAY) == 0) { // Easy AI play
 				int value = hand.getBestValue();
 				if (value == 11 || value == 10) {
 					if (rnd.nextInt(100) < (4 / 13) * 100) {
@@ -141,7 +143,7 @@ public class PlayerPanel extends JPanel {
 					return 1;
 				else
 					return 0;
-			} else { // HARDbot code
+			} else { // Hard AI play
 				if (hand.length() == 2) {
 					if ((dealerCard.getValue() <= 9 && hand.getBestValue() == 10)
 							|| (dealerCard.getValue() <= 10 && hand.getBestValue() == 11))
@@ -157,7 +159,7 @@ public class PlayerPanel extends JPanel {
 						return 0;
 					else
 						return 1;
-				} else
+				} else 
 					return 0; // just in case
 			}
 		}
@@ -187,7 +189,7 @@ public class PlayerPanel extends JPanel {
 		} else {
 			normalBet = previousBet;
 
-			if (level == EASY) {
+			if ((level & HARD_BET) == 0) { // Easy AI betting
 				int rand = rnd.nextInt(3);
 				if (previousOutcome == LOSS)
 					normalBet -= minBet * rand;
@@ -195,7 +197,7 @@ public class PlayerPanel extends JPanel {
 					;
 				else if (previousOutcome == WIN)
 					normalBet += minBet * rand;
-			} else if (level == HARD) {
+			} else { // Hard AI betting
 				int optimal = minBet * count;
 				normalBet = optimal;
 			}
@@ -230,10 +232,10 @@ public class PlayerPanel extends JPanel {
 			insureBet = askHumanBet(msg, -1, Math.min(money, bet / 2));
 		} else {
 			insureBet = 0;
-			if (level == EASY) {
+			if ((level & HARD_BET) == 0) { // Easy AI betting
 				if (rnd.nextInt(4) == 0)
 					insureBet = Math.min(money, bet / 2);
-			} else if (level == HARD) {
+			} else { // Hard AI betting
 				if (count >= 3)
 					insureBet = Math.min(money, bet / 2);
 			}
