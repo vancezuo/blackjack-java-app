@@ -17,10 +17,10 @@ import base.Hand;
  * splits.
  * <p>
  * This class also contains variables and methods for an AI player. There are
- * two AIs, EASY and HARD, who react differently when asked for bets and
- * actions. Note that the AIs can still bet "on credit" after going under.
+ * two AI modes, EASY and HARD for betting and hand playing behavior. 
+ * Note that the AIs still bet "on credit" after going under.
  * 
- * @author Vance
+ * @author Vance Zuo
  */
 public class PlayerPanel extends JPanel {
 
@@ -188,22 +188,21 @@ public class PlayerPanel extends JPanel {
 					+ ".\nHow much will you be betting?", minBet, money);
 		} else {
 			normalBet = previousBet;
-
+			
 			if ((level & HARD_BET) == 0) { // Easy AI betting
-				int rand = rnd.nextInt(3);
 				if (previousOutcome == LOSS)
-					normalBet -= minBet * rand;
+					normalBet -= minBet;
 				else if (previousOutcome == PUSH)
 					;
 				else if (previousOutcome == WIN)
-					normalBet += minBet * rand;
+					normalBet += minBet;
 			} else { // Hard AI betting
-				int optimal = minBet * count;
+				int optimal = minBet * count * 2;
 				normalBet = optimal;
 			}
 
-			if (normalBet > money / 20)
-				normalBet = money / 20;
+			if (normalBet > Math.min(money, minBet * 12))
+				normalBet = Math.min(money, minBet * 12);
 			if (normalBet < minBet)
 				normalBet = minBet;
 
@@ -217,9 +216,11 @@ public class PlayerPanel extends JPanel {
 
 
 	/**
-	 * Gets the betting amount from player for insurance. If it is human, it 
-	 * pops up a dialog asking for an amount. For computers, it is calculated 
-	 * internally. The bet is automatically subtracted from the players total money.
+	 * Gets the betting amount from player for insurance. If it is human, it
+	 * pops up a dialog asking for an amount. For computers, it is calculated
+	 * internally. The bet is automatically subtracted from the players total
+	 * money.
+	 * 
 	 * @return amount to bet
 	 */
 	public int askInsurance(int count) {
@@ -320,11 +321,12 @@ public class PlayerPanel extends JPanel {
 	 * @param max maximum player can bet
 	 * @return
 	 */
-	private int askHumanBet (String msg, int min, int max) {
+	private int askHumanBet(String msg, int min, int max) {
 		int hBet = 0;
 		String sBet = JOptionPane.showInputDialog(this.getRootPane(), msg);
 		if (sBet == null) {
-			JOptionPane.showMessageDialog(this.getRootPane(), "Okay, good bye then.");
+			JOptionPane.showMessageDialog(this.getRootPane(),
+					"Okay, good bye then.");
 			System.exit(0);
 		}
 		try {
