@@ -2,10 +2,8 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.EventListener;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -20,23 +18,24 @@ import base.Deck;
 public class BlackjackGui {
 
 	/** Minimum bet of the table  */
-	public static final int MIN_BET = 10;
+	public static final int MIN_BET = 25;
 
 	/** Money each player starts with */
-	public static final int START_MONEY = 1000;
+	public static final int START_MONEY = 10000;
 
 	/**
 	 * Contains GUI components.
 	 */			
 	public class GameWindow extends JFrame implements ActionListener {
 		private ChoicePanel playerChoices;
-		private PlayerPanel human;
-		private PlayerPanel ai1;
-		private PlayerPanel ai2;
-		private PlayerPanel ai3;
+		private PlayerPanel p1; // human slot
+		private PlayerPanel p2;
+		private PlayerPanel p3;
+		private PlayerPanel p4;
 		private DealerPanel dealer;
 		private Deck deck;
 		private boolean turnContinue;
+		private boolean hasHuman;
 
 		private Image cardImages;
 
@@ -48,6 +47,15 @@ public class BlackjackGui {
 			setLookAndFeel();
 			getContentPane().setBackground(new Color(80,135,85));
 			loadImages();
+			hasHuman = JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(
+					null,
+					"Welcome to Blackjack.\nAre you here to play as a human,\n"
+							+ "or run a test with the 4 AI algorithms?",
+					"Choose Mode", JOptionPane.YES_NO_OPTION,
+					JOptionPane.INFORMATION_MESSAGE, 
+					null, 
+					new String[] { "Human Play", "AI Experiment" }, 
+					null);
 			initComponents();			
 			pack(); 
 			setLocationRelativeTo(null); // centers the screen
@@ -65,24 +73,24 @@ public class BlackjackGui {
 			String command = a.getActionCommand();
 			String bop = "That tickles!"; //Placeholder for actual execution
 			if (command.equals("Hit")) {
-				giveCard(human);
-				boolean busted = human.getHand().isBusted();
+				giveCard(p1);
+				boolean busted = p1.getHand().isBusted();
 				turnContinue = !busted;
 				playerChoices.disableSurrender();
 				playerChoices.disableDouble();
 			} else if (command.equals("Stand")) {
 				turnContinue = false;
 			} else if (command.equals("Double")){
-				human.doubleDown();
-				giveCard(human);
+				p1.doubleDown();
+				giveCard(p1);
 				turnContinue = false;
 			} else if (command.equals("Split")) {
 				JOptionPane.showMessageDialog(this, bop);
 			} else if (command.equals("Surrender")) {				
 				JOptionPane.showMessageDialog(this, "Not feeling it? Fine, " +
-						"take back $" + human.getCurrentBet() / 2 + ".");
-				collectCards(human);
-				human.addWinnings(human.getCurrentBet() / 2);
+						"take back $" + p1.getCurrentBet() / 2 + ".");
+				collectCards(p1);
+				p1.addWinnings(p1.getCurrentBet() / 2);
 				turnContinue = false;
 			}
 			repaint();
@@ -115,20 +123,36 @@ public class BlackjackGui {
 			add(dealer, BorderLayout.LINE_START);
 
 			JPanel players = new JPanel();
-			players.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.DARK_GRAY), "Players"));
-			human = new PlayerPanel("You", true, -1, START_MONEY, MIN_BET, cardImages);
-			ai1 = new PlayerPanel("Beginner AI", false, PlayerPanel.EASY_BET | PlayerPanel.EASY_PLAY, START_MONEY, MIN_BET, cardImages);
-			ai2 = new PlayerPanel("Emotional Skilled AI", false, PlayerPanel.EASY_BET | PlayerPanel.HARD_PLAY, START_MONEY, MIN_BET, cardImages);
-			ai3 = new PlayerPanel("Card-counting AI", false, PlayerPanel.HARD_BET | PlayerPanel.HARD_PLAY, START_MONEY, MIN_BET, cardImages);		
-			players.add(human);
-			players.add(ai1);
-			players.add(ai2);
-			players.add(ai3);
+			players.setBorder(BorderFactory.createTitledBorder(
+					BorderFactory.createLineBorder(Color.DARK_GRAY), "Players"));
+			if (hasHuman) {
+				p1 = new PlayerPanel("You", true, -1, 
+						START_MONEY, MIN_BET, cardImages);
+			} else {
+				p1 = new PlayerPanel("Amateur/Beginner AI", false,
+						PlayerPanel.EASY_BET | PlayerPanel.EASY_PLAY, 
+						START_MONEY, MIN_BET, cardImages);
+			}
+			p2 = new PlayerPanel("Card-Counter/Beginner AI", false,
+					PlayerPanel.HARD_BET | PlayerPanel.EASY_PLAY, 
+					START_MONEY, MIN_BET, cardImages);
+			p3 = new PlayerPanel("Amateur/Skilled AI", false,
+					PlayerPanel.EASY_BET | PlayerPanel.HARD_PLAY, 
+					START_MONEY, MIN_BET, cardImages);
+			p4 = new PlayerPanel("Card-Counter/Skilled AI", false,
+					PlayerPanel.HARD_BET | PlayerPanel.HARD_PLAY, 
+					START_MONEY, MIN_BET, cardImages);	
+			players.add(p1);
+			players.add(p2);
+			players.add(p3);
+			players.add(p4);
 			players.setOpaque(false);
-			add(players, BorderLayout.CENTER);	
-			playerChoices = new ChoicePanel();
-			playerChoices.addListener(this);
-			add(playerChoices, BorderLayout.PAGE_END);		
+			add(players, BorderLayout.CENTER);
+			if (hasHuman) {
+				playerChoices = new ChoicePanel();
+				playerChoices.addListener(this);	
+				add(playerChoices, BorderLayout.PAGE_END);	
+			}
 		}
 
 		/**
@@ -342,10 +366,10 @@ public class BlackjackGui {
 		 * Asks for bets from players
 		 */
 		private void askBets() {
-			human.askBet(deck.getCount());
-			ai1.askBet(deck.getCount());
-			ai2.askBet(deck.getCount());
-			ai3.askBet(deck.getCount());
+			p1.askBet(deck.getCount());
+			p2.askBet(deck.getCount());
+			p3.askBet(deck.getCount());
+			p4.askBet(deck.getCount());
 		}     
 
 		/**
@@ -353,10 +377,10 @@ public class BlackjackGui {
 		 */
 		private void deal() {
 			dealerCards(dealer);
-			dealCards(human);
-			dealCards(ai1);
-			dealCards(ai2);
-			dealCards(ai3);
+			dealCards(p1);
+			dealCards(p2);
+			dealCards(p3);
+			dealCards(p4);
 		}                
 
 		/**
@@ -364,10 +388,10 @@ public class BlackjackGui {
 		 */
 		public void insurance() {
 			if (dealer.checkAce()) {
-				doInsurance(human);
-				doInsurance(ai1);
-				doInsurance(ai2);
-				doInsurance(ai3);
+				doInsurance(p1);
+				doInsurance(p2);
+				doInsurance(p3);
+				doInsurance(p4);
 			}
 		}
 
@@ -376,15 +400,20 @@ public class BlackjackGui {
 		 */
 		public void doAITurns() {
 			int aiAction;
+			if (!hasHuman) {
+				do {
+					aiAction = p1.askComputerAction(dealer.getHand().get(0));
+				} while (parseAIActions(p1, aiAction) == true);
+			}
 			do {
-				aiAction = ai1.askComputerAction(dealer.getHand().get(0));
-			} while (parseAIActions(ai1, aiAction) == true);
+				aiAction = p2.askComputerAction(dealer.getHand().get(0));
+			} while (parseAIActions(p2, aiAction) == true);
 			do {
-				aiAction = ai2.askComputerAction(dealer.getHand().get(0));
-			} while (parseAIActions(ai2, aiAction) == true);
+				aiAction = p3.askComputerAction(dealer.getHand().get(0));
+			} while (parseAIActions(p3, aiAction) == true);
 			do {
-				aiAction = ai3.askComputerAction(dealer.getHand().get(0));
-			} while (parseAIActions(ai3, aiAction) == true);
+				aiAction = p4.askComputerAction(dealer.getHand().get(0));
+			} while (parseAIActions(p4, aiAction) == true);
 		}
 
 		/**
@@ -394,12 +423,20 @@ public class BlackjackGui {
 		 * @return true if AI can continue to play, false otherwise
 		 */
 		private boolean parseAIActions(PlayerPanel ai, int action) {
-			switch(action) {
-			case 0: return false;
-			case 1: giveCard(ai); return true;
-			case 2: return false; //AI never surrenders anyway
-			case 3: ai.doubleDown(); giveCard(ai); return false;
-			default: return false;
+			switch (action) {
+			case 0:
+				return false;
+			case 1:
+				giveCard(ai);
+				return true;
+			case 2:
+				return false; // AI never surrenders anyway
+			case 3:
+				ai.doubleDown();
+				giveCard(ai);
+				return false;
+			default:
+				return false;
 			}
 		}
 
@@ -417,20 +454,20 @@ public class BlackjackGui {
 		 * Gives out the money winnings.
 		 */
 		public void doPayOuts() {
-			payOut(ai1);
-			payOut(ai2);
-			payOut(ai3);
-			payOut(human);
+			payOut(p2);
+			payOut(p3);
+			payOut(p4);
+			payOut(p1);
 		}
 
 		/**
 		 * Clears the cards from the table.
 		 */
 		private void reset() {
-			collectCards(human);
-			collectCards(ai1);
-			collectCards(ai2);
-			collectCards(ai3);
+			collectCards(p1);
+			collectCards(p2);
+			collectCards(p3);
+			collectCards(p4);
 			collectDealerCards();  
 			turnContinue = true;
 		}
@@ -443,11 +480,20 @@ public class BlackjackGui {
 	public static void main(String[] args) {		
 		BlackjackGui b = new BlackjackGui();
 		GameWindow game = b.new GameWindow();
-		JOptionPane.showMessageDialog(game, "Welcome to the table.\n"
-				+ "Take a seat on the far left, "
-				+ "next to the three computer players.");        
+		int delay = 0;
+		if (!game.hasHuman) {
+			try {
+				delay = Integer.parseInt(JOptionPane.showInputDialog(game,
+						"Enter delay:"));
+			} catch (Exception e) {
+				delay = 500;
+				JOptionPane.showMessageDialog(null, "Ugh, something went "
+						+ "wrong.\nSetting to default value of " + delay + ".");
+			}			
+		}
+		
 		while (true) {
-			if (game.human.getMoney() < MIN_BET) {
+			if (game.hasHuman && game.p1.getMoney() < MIN_BET) {
 				JOptionPane.showMessageDialog(game, 
 						"Sorry, no money, no play.");
 				System.exit(0);
@@ -457,22 +503,31 @@ public class BlackjackGui {
 			game.deal();         	
 			game.repaint();
 			game.insurance();
-			game.setButtonState(true, true, true, false, true);
-			if (game.human.getCurrentBet() > game.human.getMoney()) 
-				game.playerChoices.disableDouble();
-			while (game.turnContinue) { 
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+			if (game.hasHuman) {
+				game.setButtonState(true, true, true, false, true);
+				if (game.p1.getCurrentBet() > game.p1.getMoney()) 
+					game.playerChoices.disableDouble();
+				while (game.turnContinue) { 
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-			}        	
-			game.setButtonState(false, false, false, false, false);        	       	
+				game.setButtonState(false, false, false, false, false);
+			}     	
 			game.doAITurns();
 			game.doDealerTurn();
 			game.repaint();       
 			game.doPayOuts();
-			game.reset();        	
+			if (!game.hasHuman) {
+				try {
+					Thread.sleep(delay);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}	  
+			game.reset();   
 		}        
 	}
 
