@@ -1,5 +1,5 @@
-quest-blackjack
-===============
+blackjack-java-app
+==================
 
 This is an old Blackjack app I made with a friend, Brian Wang, in 2011 as a high school project. The app is programmed in Java using Swing. It implements most rules of casino Blackjack, except splitting. The interface simulates playing Blackjack against a dealer at a table with three AI players. There is also a mode for testing four AI players at once. 
 
